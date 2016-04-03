@@ -7,14 +7,21 @@ Date.prototype.getMonth = function () {
     return oldGetMonth.call(this) + 1;
 };
 
-const logger = {},
+const chalk = require('chalk'),
+    logger = {},
     tokenRe = /{([a-zA-Z]+)}/g,
     // Will call methods on JavaScript's Date object.
     formatDateString = tpl => d => tpl.replace(tokenRe, (a, $1) => d[dateFormatters[$1]]()),
     // Glues the sub-templates together.
     formatDisplayDateString = tpl => d => tpl.replace(tokenRe, (a, $1) => tplFormatters[$1](d)),
-    preprocess = () => {},
-    postprocess = () => {},
+    // TODO
+    prelog = methodName => {
+        return chalk[colorMap[methodName]](tplFormatters.getDisplayDateString(new Date())) +
+            chalk[colorMap[methodName]](tplFormatters.getDisplayMethodString(methodName));
+    },
+    postlog = methodName => methodName || '',
+    preprocess = methodName => methodName || '',
+    postprocess = methodName => methodName || '',
     dateFormatters = {
         d: 'getDate',
         H: 'getHours',
@@ -23,6 +30,13 @@ const logger = {},
         s: 'getSeconds',
         ms: 'getMilliseconds',
         Y: 'getFullYear'
+    },
+    colorMap = {
+        debug: 'cyan',
+        error: 'red',
+        info: 'blue',
+        log: 'green',
+        warn: 'yellow'
     };
 
 // Set some sensible defaults.
@@ -30,38 +44,41 @@ let dateTpl = '{Y}-{m}-{d}',
     timeTpl = '{H}:{i}:{s}.{ms}',
     displayDateTpl = '[{getDateString} {getTimeString}]',
     wrapped = console || {},
-    enabled = false,
+    disabled = false,
     // TODO: Closure is bad here!
     tplFormatters = {
         getDateString: formatDateString(dateTpl),
         getTimeString: formatDateString(timeTpl),
         getDisplayDateString: formatDisplayDateString(displayDateTpl),
-        getDisplayMethodString: method => `[${method.toUpperCase()}]`
+        // TODO
+        getDisplayMethodString: methodName => `[${methodName.toUpperCase()}]`
     };
 
-function invoke(method) {
+function invoke(methodName) {
     return function () {
-        if (enabled) {
+        if (disabled) {
             return;
         }
 
-        const d = new Date();
+        preprocess(methodName);
 
-        preprocess();
+        wrapped[methodName].apply(wrapped, [ prelog(methodName) ]
+            .concat(Array.from(arguments))
+            .concat([ postlog(methodName) ]));
 
-        wrapped[method].apply(wrapped, [
-            tplFormatters.getDisplayDateString(d),
-            tplFormatters.getDisplayMethodString(method)
-        ].concat(Array.from(arguments)));
-
-        postprocess();
+        postprocess(methodName);
     };
 }
 
-for (const method of Object.keys(wrapped)) {
-    logger[method] = invoke(method);
+for (const methodName of Object.keys(wrapped)) {
+    logger[methodName] = invoke(methodName);
 }
 
+// Allow access to underlying wrapped logger object.
+logger.__get = () => wrapped;
+logger.disable = () => disabled = true;
+logger.enable = () => disabled = false;
+// TODO
 logger.logLevel = () => {};
 logger.setDateTpl = tpl => dateTpl = tpl;
 logger.setTimeTpl = tpl => timeTpl = tpl;
