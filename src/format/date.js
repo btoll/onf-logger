@@ -1,7 +1,9 @@
 'use strict';
 
+// Contains Date.prototype overrides.
+require('../lib/Date');
+
 let displayDateTpl = '[{getDateString} {getTimeString}]',
-    // Set some sensible defaults.
     dateTpl = '{Y}-{m}-{d}',
     timeTpl = '{H}:{i}:{s}.{ms}';
 

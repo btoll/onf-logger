@@ -1,18 +1,17 @@
-/* eslint-disable no-console, no-unused-vars, one-var */
+/* eslint-disable no-console, one-var */
 'use strict';
 
-const format = require('./format/date'),
-    logger = {},
+const logger = {},
     // TODO
-    preprocess = methodName => '',
-    postprocess = methodName => '',
+    preprocess = () => '',
+    postprocess = () => '',
     aliases = {
         debug: 'info',
         fatal: 'error'
     };
 
-// Set some sensible defaults.
-let wrapped = console || {},
+let format = require('./format/base'),
+    wrapped = console || {},
     disabled = false;
 
 function invoke(methodName) {
@@ -40,12 +39,13 @@ for (const alias of Object.keys(aliases)) {
     logger[alias] = invoke(alias);
 }
 
-// Allow access to underlying wrapped logger object.
+// Allow access to the underlying wrapped logger object.
 logger.__get = () => wrapped;
 logger.disable = () => disabled = true;
 logger.enable = () => disabled = false;
 // TODO
 logger.logLevel = () => {};
+logger.setFormat = f => format = require(`./format/${f}`);
 logger.wrap = target => wrapped = target;
 
 module.exports = logger;

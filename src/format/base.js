@@ -1,8 +1,5 @@
 'use strict';
 
-// Contains Date.prototype overrides.
-require('../lib/Date');
-
 const chalk = require('chalk'),
     chalkMap = {
         debug: 'cyan',
@@ -13,16 +10,13 @@ const chalk = require('chalk'),
         warn: 'yellow'
     },
 
-    colorize = (methodName, str) => chalk[chalkMap[methodName]](str),
-    getDisplayMethodString = methodName => `[${methodName.toUpperCase()}]`,
-
     base = {
-        colorize,
+        colorize: (methodName, str) => chalk[chalkMap[methodName]](str),
         getChalk: () => chalk,
         getChalkMap: () => chalkMap,
 
         prelog: methodName =>
-            colorize(methodName, getDisplayMethodString(methodName)),
+            base.colorize(methodName, `[${methodName.toUpperCase()}]`),
 
         postlog: () => ''
     };
