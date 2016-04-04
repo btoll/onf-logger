@@ -32,8 +32,8 @@ const base = require('./base'),
     };
 
 module.exports = Object.setPrototypeOf({
-    prelog: methodName => {
-        return `${base.colorize(methodName, getDisplayDateString())} ${base.prelog(methodName)}`;
+    prelog: logMethodName => {
+        return `${base.chalk.color(logMethodName, getDisplayDateString())} ${base.prelog(logMethodName)}`;
     },
     setDateTpl: tpl => dateTpl = tpl,
     setTimeTpl: tpl => timeTpl = tpl,
