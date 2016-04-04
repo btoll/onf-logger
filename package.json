@@ -2,7 +2,7 @@
   "name": "logger",
   "version": "0.1.0",
   "description": "Logging wrapper",
-  "main": "logger.js",
+  "main": "./src/index.js",
   "dependencies": {
     "chalk": "^1.1.3"
   },

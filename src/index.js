@@ -1,11 +1,8 @@
-/* eslint-disable no-console, one-var */
+/* eslint-disable no-console, no-unused-vars, one-var */
 'use strict';
 
-// Hackery because Date.getMonth is zero-based.
-const oldGetMonth = Date.prototype.getMonth;
-Date.prototype.getMonth = function () {
-    return oldGetMonth.call(this) + 1;
-};
+// Contains Date.prototype overrides.
+require('./lib/Date');
 
 const chalk = require('chalk'),
     logger = {},
@@ -16,12 +13,16 @@ const chalk = require('chalk'),
     formatDisplayDateString = tpl => d => tpl.replace(tokenRe, (a, $1) => tplFormatters[$1](d)),
     // TODO
     prelog = methodName => {
-        return chalk[colorMap[methodName]](tplFormatters.getDisplayDateString(new Date())) +
-            chalk[colorMap[methodName]](tplFormatters.getDisplayMethodString(methodName));
+        return chalk[chalkMap[methodName]](tplFormatters.getDisplayDateString(new Date())) +
+            chalk[chalkMap[methodName]](tplFormatters.getDisplayMethodString(methodName));
     },
-    postlog = methodName => methodName || '',
-    preprocess = methodName => methodName || '',
-    postprocess = methodName => methodName || '',
+    postlog = methodName => '',
+    preprocess = methodName => '',
+    postprocess = methodName => '',
+    aliases = {
+        debug: 'info',
+        fatal: 'error'
+    },
     dateFormatters = {
         d: 'getDate',
         H: 'getHours',
@@ -31,9 +32,10 @@ const chalk = require('chalk'),
         ms: 'getMilliseconds',
         Y: 'getFullYear'
     },
-    colorMap = {
+    chalkMap = {
         debug: 'cyan',
         error: 'red',
+        fatal: 'bgRed',
         info: 'blue',
         log: 'green',
         warn: 'yellow'
@@ -62,7 +64,8 @@ function invoke(methodName) {
 
         preprocess(methodName);
 
-        wrapped[methodName].apply(wrapped, [ prelog(methodName) ]
+        // Check first if it's an alias so an actual underlying implementation is called!
+        wrapped[ aliases[methodName] || methodName ].apply(wrapped, [ prelog(methodName) ]
             .concat(Array.from(arguments))
             .concat([ postlog(methodName) ]));
 
@@ -72,6 +75,10 @@ function invoke(methodName) {
 
 for (const methodName of Object.keys(wrapped)) {
     logger[methodName] = invoke(methodName);
+}
+
+for (const alias of Object.keys(aliases)) {
+    logger[alias] = invoke(alias);
 }
 
 // Allow access to underlying wrapped logger object.
