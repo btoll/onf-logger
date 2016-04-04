@@ -7,7 +7,8 @@ const logger = {},
     postprocess = () => '',
     aliases = {
         debug: 'info',
-        fatal: 'error'
+        fatal: 'error',
+        success: 'log'
     };
 
 let format = require('./format/base'),

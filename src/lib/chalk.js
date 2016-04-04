@@ -7,6 +7,7 @@ const chalk = require('chalk'),
         fatal: 'bgRed',
         info: 'blue',
         log: 'green',
+        success: 'green',
         warn: 'yellow'
     };
 
