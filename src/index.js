@@ -8,6 +8,7 @@ const logger = {},
     aliases = {
         debug: 'info',
         fatal: 'error',
+        raw: 'log',
         success: 'log'
     };
 
@@ -23,10 +24,15 @@ function invoke(methodName) {
 
         preprocess(methodName);
 
-        // Check first if it's an alias so an actual underlying implementation is called!
-        wrapped[ aliases[methodName] || methodName ].apply(wrapped, [ format.prelog(methodName) ]
-            .concat(Array.from(arguments))
-            .concat([ format.postlog(methodName) ]));
+        // TODO: Better way?
+        if (methodName === 'raw') {
+            wrapped[aliases[methodName]].apply(wrapped, arguments);
+        } else {
+            // Check first if it's an alias so an actual underlying implementation is called!
+            wrapped[ aliases[methodName] || methodName ].apply(wrapped, [ format.prelog(methodName) ]
+                .concat(Array.from(arguments))
+                .concat([ format.postlog(methodName) ]));
+        }
 
         postprocess(methodName);
     };
