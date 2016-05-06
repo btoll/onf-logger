@@ -1,6 +1,6 @@
 'use strict';
 
-const chalk = require('../lib/chalk');
+const chalk = require('../chalk');
 
 module.exports = {
     chalk,

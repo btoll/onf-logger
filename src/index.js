@@ -1,23 +1,22 @@
-/* eslint-disable no-console, one-var */
 'use strict';
 
-const logger = {},
-    // TODO
-    preprocess = () => '',
-    postprocess = () => '',
-    aliases = {
-        debug: 'info',
-        fatal: 'error',
-        raw: 'log',
-        success: 'log'
-    };
+const logger = {};
+// TODO
+const preprocess = () => '';
+const postprocess = () => '';
+const aliases = {
+    debug: 'info',
+    fatal: 'error',
+    raw: 'log',
+    success: 'log'
+};
 
-let format = require('./format/base'),
-    wrapped = console || {},
-    disabled = false;
+let format = require('./format/base');
+let wrapped = console || {};
+let disabled = false;
 
-function invoke(methodName) {
-    return function () {
+const invoke = methodName =>
+    function () {
         if (disabled) {
             return;
         }
@@ -29,14 +28,13 @@ function invoke(methodName) {
             wrapped[aliases[methodName]].apply(wrapped, arguments);
         } else {
             // Check first if it's an alias so an actual underlying implementation is called!
-            wrapped[ aliases[methodName] || methodName ].apply(wrapped, [ format.prelog(methodName) ]
+            wrapped[aliases[methodName] || methodName].apply(wrapped, [format.prelog(methodName)]
                 .concat(Array.from(arguments))
                 .concat([ format.postlog(methodName) ]));
         }
 
         postprocess(methodName);
     };
-}
 
 for (const methodName of Object.keys(wrapped)) {
     logger[methodName] = invoke(methodName);
