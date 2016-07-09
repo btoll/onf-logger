@@ -1,7 +1,35 @@
 'use strict';
 
-// Contains Date.prototype overrides.
-require('../Date');
+// We need to zero-pad for a more pleasing presentation.
+const augmenter = n =>
+    n < 10 ? '0' + n : n;
+
+const oldGetMonth = Date.prototype.getMonth;
+const oldGetDate = Date.prototype.getDate;
+const oldGetHours = Date.prototype.getHours;
+const oldGetMinutes = Date.prototype.getMinutes;
+const oldGetSeconds = Date.prototype.getSeconds;
+
+Date.prototype.getMonth = function () {
+    // #getMonth is zero-based.
+    return augmenter(oldGetMonth.call(this) + 1);
+};
+
+Date.prototype.getDate = function () {
+    return augmenter(oldGetDate.call(this));
+};
+
+Date.prototype.getHours = function () {
+    return augmenter(oldGetHours.call(this));
+};
+
+Date.prototype.getMinutes = function () {
+    return augmenter(oldGetMinutes.call(this));
+};
+
+Date.prototype.getSeconds = function () {
+    return augmenter(oldGetSeconds.call(this));
+};
 
 let displayDateTpl = '[{getDateString} {getTimeString}]';
 let dateTpl = '{Y}-{m}-{d}';
