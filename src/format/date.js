@@ -1,8 +1,8 @@
 'use strict';
 
-// We need to zero-pad for a more pleasing presentation.
-const augmenter = n =>
-    n < 10 ? '0' + n : n;
+// Left-pad for a more pleasing presentation.
+const augmenter = num =>
+    num < 10 ? '0' + num : num;
 
 const oldGetMonth = Date.prototype.getMonth;
 const oldGetDate = Date.prototype.getDate;
@@ -37,18 +37,12 @@ let timeTpl = '{H}:{i}:{s}.{ms}';
 
 const base = require('./base');
 const tokenRe = /{([a-zA-Z]+)}/g;
-// Will call methods on JavaScript's Date object.
-const formatDateString = tpl => d => tpl.replace(tokenRe, (a, $1) => d[dateObjectMethods[$1]]());
-// Glues the sub-templates together.
-const getDisplayDateString = () => {
-    const d = new Date();
-    return displayDateTpl.replace(tokenRe, (a, $1) => tpls[$1](d));
-};
-// TODO: Closure is bad here!
+
 const tpls = {
     getDateString: formatDateString(dateTpl),
     getTimeString: formatDateString(timeTpl)
 };
+
 const dateObjectMethods = {
     d: 'getDate',
     H: 'getHours',
@@ -59,11 +53,24 @@ const dateObjectMethods = {
     Y: 'getFullYear'
 };
 
+// Will call methods on JavaScript's Date object.
+const formatDateString = tpl =>
+    d => tpl.replace(tokenRe, (a, $1) => d[dateObjectMethods[$1]]());
+
+// Glues the sub-templates together.
+const getDisplayDateString = () => {
+    const d = new Date();
+    return displayDateTpl.replace(tokenRe, (a, $1) => tpls[$1](d));
+};
+
 module.exports = Object.setPrototypeOf({
     prelog: logMethodName =>
         `${base.chalk.color(logMethodName, getDisplayDateString())} ${base.prelog(logMethodName)}`,
-    setDateTpl: tpl => dateTpl = tpl,
-    setTimeTpl: tpl => timeTpl = tpl,
-    setDisplayDateTpl: tpl => displayDateTpl = tpl
+
+    setDateTpl: tpl =>
+        tpls.getDateString = formatDateString(tpl),
+
+    setTimeTpl: tpl =>
+        tpls.getTimeString = formatDateString(tpl)
 }, base);
 

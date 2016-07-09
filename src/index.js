@@ -96,6 +96,7 @@ logger.setLogLevel = level =>
 logger.format = format;
 logger.setFormat = f =>
     format = logger.format = require(`./format/${f}`);
+
 logger.wrap = target => wrapped = target;
 
 // Allow access to the underlying wrapped logger object.
