@@ -11,29 +11,19 @@ const logLevels = {
     WARN: 4,
     ERROR: 8,
     FATAL: 16,
-    DEBUG: 32
+    DEBUG: 32,
+    //
+    LOG: 1,
+    INFO_ALL: 3, // (RAW && LOG) + INFO
+    ERRORS: 12, // WARN + ERROR
+    ERRORS_ALL: 28, // WARN + ERROR + FATAL
+    ALL: 31 // (RAW && LOG) + INFO + WARN + ERROR + FATAL
 };
-
-// We're repeating some properties here for readability!
-logLevels.ALL = logLevels.RAW +
-                logLevels.INFO +
-                logLevels.WARN +
-                logLevels.ERROR +
-                logLevels.FATAL;
-
-logLevels.ERRORS = logLevels.WARN +
-                   logLevels.ERROR;
-
-logLevels.ERRORS_ALL = logLevels.WARN +
-                       logLevels.ERROR +
-                       logLevels.FATAL;
-
-logLevels.INFO_ALL = logLevels.RAW +
-                     logLevels.INFO;
 
 // TODO
 const preprocess = () => '';
 const postprocess = () => '';
+
 const aliases = {
     debug: 'info',
     fatal: 'error',
