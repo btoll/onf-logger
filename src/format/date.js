@@ -33,7 +33,7 @@ Date.prototype.getSeconds = function () {
 
 let displayDateTpl = '[{getDateString} {getTimeString}]';
 let dateTpl = '{Y}-{m}-{d}';
-let timeTpl = '{H}:{i}:{s}.;ms}';
+let timeTpl = '{H}:{i}:{s}.{ms}';
 
 const base = require('./base');
 const tokenRe = /{([a-zA-Z]+)}/g;
