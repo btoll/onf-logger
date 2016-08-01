@@ -7,13 +7,13 @@ const IFS = '|';
 
 const logLevels = {
     RAW: 1,
+    LOG: 1,
     INFO: 2,
     WARN: 4,
     ERROR: 8,
     FATAL: 16,
     DEBUG: 32,
     //
-    LOG: 1,
     INFO_ALL: 3, // (RAW && LOG) + INFO
     ERRORS: 12, // WARN + ERROR
     ERRORS_ALL: 28, // WARN + ERROR + FATAL
@@ -35,23 +35,22 @@ const aliases = {
 let logLevel = logLevels.INFO_ALL + logLevels.ERRORS;
 let wrapped = console || {};
 
-const checkLogLevel = level =>
-    logLevel & logLevels[level];
+const checkLogLevel = level => logLevel & logLevels[level];
+const normalizeMethodName = methodName => aliases[methodName] || methodName;
 
 const invoke = methodName =>
     function () {
-        if (!checkLogLevel(methodName.toUpperCase())) {
+        if (!checkLogLevel(normalizeMethodName(methodName).toUpperCase())) {
             return;
         }
 
         preprocess(methodName);
 
-        // TODO: Better way?
         if (methodName === 'raw') {
             wrapped[aliases[methodName]].apply(wrapped, arguments);
         } else {
             // Check first if it's an alias so an actual underlying implementation is called!
-            wrapped[aliases[methodName] || methodName].apply(wrapped, [format.prelog(methodName)]
+            wrapped[normalizeMethodName(methodName)].apply(wrapped, [format.prelog(methodName)]
                 .concat(Array.from(arguments))
                 .concat([format.postlog(methodName)]));
         }
