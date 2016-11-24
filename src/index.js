@@ -68,6 +68,8 @@ for (const alias of Object.keys(aliases)) {
     logger[alias] = invoke(alias);
 }
 
+logger.getLogLevel = () => logLevel;
+
 /**
  * level === Number or a String.
  *
@@ -85,21 +87,23 @@ for (const alias of Object.keys(aliases)) {
 logger.setLogLevel = level =>
     logLevel = typeof level !== 'number' ?
         level.indexOf(IFS) > -1 ?
-            level.split(IFS).reduce((acc, curr) => {
+            // First, strip all whitespace.
+            level.replace(/\s/g, '').split(IFS).reduce((acc, curr) => {
                 acc += logLevels[curr];
                 return acc;
             }, 0) :
             logLevels[level] :
         level;
 
-logger.format = format;
-logger.setFormat = f =>
-    format = logger.format = require(`./format/${f}`);
-
 logger.wrap = target => wrapped = target;
 
 // Allow access to the underlying wrapped logger object.
 logger.__get = () => wrapped;
+
+// TODO: Allow a format to be set at runtime?
+logger.format = format;
+logger.__setFormat = f =>
+    format = logger.format = require(`./format/${f}`);
 
 module.exports = logger;
 
