@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 'use strict';
 
-// const cons = require('console');
 // const fs = require('fs');
 
 describe('logger', () => {
@@ -37,25 +36,27 @@ describe('logger', () => {
 
     /*
     fdescribe('logging', () => {
-        let writeStream;
-        let capturedConsole;
+//        let writeStream;
+//        let capturedConsole;
+
+        const fn = (...args) =>
+            fs.writeFileSync('./stdout.log', args.join(' '));
+
+        const myConsole = {
+            error: fn,
+            warn: fn
+        };
+
 
         beforeEach(() => {
-            writeStream = fs.createWriteStream('./stdout.log', { flags: 'w' });
-            capturedConsole = new cons.Console(writeStream);
-            logger.wrap(capturedConsole);
-            logger.error('foo');
-        });
-
-        afterEach(() => {
-            writeStream = capturedConsole = null;
+            logger.setLogger(myConsole);
+            logger.disableColor();
         });
 
         it('should prepend the error message with the type', () => {
-//            logger.error('foo');
-
-//            expect(fs.readFileSync('./stdout.log', 'utf8')).toBe('[ERROR] yobe');
-            console.log(fs.statSync('./stdout.log'));
+            logger.warn('unlucky');
+//            console.log(process.cwd());
+            expect(fs.readFileSync('./stdout.log', 'utf8')).toBe('[WARN] unlucky');
         });
     });
     */

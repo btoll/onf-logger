@@ -4,7 +4,13 @@ const chalk = require('../chalk');
 
 module.exports = {
     chalk,
-    prelog: logMethodName => chalk.color(logMethodName, `[${logMethodName.toUpperCase()}]`),
+    prelog: (logMethodName, isColorEnabled) => {
+        const formattedName = `[${logMethodName.toUpperCase()}]`;
+
+        return !isColorEnabled ?
+            formattedName :
+            chalk.color(logMethodName, formattedName);
+    },
     postlog: () => ''
 };
 
