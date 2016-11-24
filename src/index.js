@@ -73,10 +73,9 @@ const setLogLevel = level =>
     logLevel = typeof level !== 'number' ?
         level.indexOf(IFS) > -1 ?
             // First, strip all whitespace.
-            level.replace(/\s/g, '').split(IFS).reduce((acc, curr) => {
-                acc += logLevels[curr];
-                return acc;
-            }, 0) :
+            level.replace(/\s/g, '').split(IFS).reduce((acc, curr) => (
+                acc += logLevels[curr], acc
+            ), 0) :
             logLevels[level] :
         level;
 
@@ -94,17 +93,17 @@ const setLogger = target => {
     for (const alias of Object.keys(aliases)) {
         logger[alias] = wrap(alias);
     }
+
+    return logger;
 };
 
 const wrap = methodName =>
     function () {
-        const name = normalizeMethodName(methodName);
-
-        if (!checkLogLevel(name.toUpperCase())) {
+        if (!checkLogLevel(methodName.toUpperCase())) {
             return;
         }
 
-        const fn = wrapped[name];
+        const fn = wrapped[normalizeMethodName(methodName)];
 
         if (!fn) {
             throw new Error('Function does not exist on this logger!');
@@ -116,9 +115,17 @@ const wrap = methodName =>
             fn.apply(wrapped, arguments);
         } else {
             // Check first if it's an alias so an actual underlying implementation is called!
-            fn.apply(wrapped, [format.prelog(methodName, isColorEnabled)]
+            const pre = format.prelog(methodName, isColorEnabled);
+            const post = format.postlog(methodName);
+
+            // By testing for truthiness, we can avoid situations where there is an empty string
+            // returned by either the `prelog` or `postlog` functions which would result in an
+            // empty string element being add to the concatenated array.
+            fn.apply(wrapped,
+                (pre ? [pre] : [])
                 .concat(Array.from(arguments))
-                .concat([format.postlog(methodName)]));
+                .concat(post ? [post] : [])
+            );
         }
 
         postprocess(methodName);
