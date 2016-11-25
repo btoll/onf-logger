@@ -7,18 +7,19 @@ const stdoutLog = './stdout.log';
 describe('logger', () => {
     let logger = require('../src/index');
 
-    const makeLogger = flag => {
-        const fn = function () {
+    const fn = flag =>
+        function () {
             fs.writeFileSync(stdoutLog, Array.from(arguments).join(' '), {
                 flag: flag || 'w'
             });
         };
 
-        return {
-            error: fn,
-            info: fn,
-            log: fn,
-            warn: fn
+    const makeLogger = (flag, fns) => {
+        return fns || {
+            error: fn(flag),
+            info: fn(flag),
+            log: fn(flag),
+            warn: fn(flag)
         };
     };
 
@@ -132,6 +133,23 @@ describe('logger', () => {
             logger.error('foo', 5);
 
             expect(myConsole.error).toHaveBeenCalledWith('[ERROR]', 'foo', 5);
+        });
+
+        it('should throw when calling a non-existent but previously-defined function', () => {
+            logger.warn('foobar');
+
+            // Note we're setting a new logger but then we're not re-defining the `logger` var so
+            // it still points to the old one! This is necessary to setup the error, it cannot
+            // happen any other way!
+            //
+            // Also, note we're passing in an object of logger functions that doesn't include `warn`!
+            logger.setLogger(makeLogger('w', {
+                error: fn(),
+                info: fn(),
+                log: fn()
+            }));
+
+            expect(() => logger.warn('foobar')).toThrow();
         });
     });
 });
