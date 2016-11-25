@@ -52,6 +52,10 @@ const disableColor = () =>
 const enableColor = () =>
     isColorEnabled = true;
 
+// Allow access to the underlying color package.
+const getColor = () =>
+    format.getColor();
+
 const getLogLevel = () =>
     logLevel;
 
@@ -138,6 +142,7 @@ const proto = {
     __get,
     disableColor,
     enableColor,
+    getColor,
     getLogLevel,
     setLogLevel,
     setLogger

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 'use strict';
 
+const color = require('chalk');
 const fs = require('fs');
 const stdoutLog = './stdout.log';
 
@@ -27,6 +28,10 @@ describe('logger', () => {
 
     it('should allow access to the underyling wrapped logger object', () => {
         expect(logger.__get()).toBe(console);
+    });
+
+    it('should allow access to the underyling color package', () => {
+        expect(logger.getColor()).toBe(color);
     });
 
     describe('TODO: aliases', () => {

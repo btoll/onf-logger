@@ -3,7 +3,7 @@
 const color = require('../color');
 
 module.exports = {
-    color,
+    getColor: color.__get,
     prelog: (logMethodName, isColorEnabled) => {
         const formattedName = `[${logMethodName.toUpperCase()}]`;
 

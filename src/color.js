@@ -12,7 +12,7 @@ const colorMap = {
 };
 
 module.exports = {
-    color: (logMethodName, str) => color[colorMap[logMethodName]](str),
-    getColor: () => color
+    __get: () => color,
+    color: (logMethodName, str) => color[colorMap[logMethodName]](str)
 };
 
