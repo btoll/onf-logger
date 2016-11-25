@@ -8,10 +8,11 @@ describe('logger', () => {
     let logger = require('../src/index');
 
     const makeLogger = flag => {
-        const fn = (...args) =>
-            fs.writeFileSync(stdoutLog, args.join(' '), {
+        const fn = function () {
+            fs.writeFileSync(stdoutLog, Array.from(arguments).join(' '), {
                 flag: flag || 'w'
             });
+        };
 
         return {
             error: fn,
@@ -21,7 +22,6 @@ describe('logger', () => {
         };
     };
 
-    afterEach(() => logger.setLogLevel('INFO_ALL|ERRORS'));
     afterAll(() => fs.unlinkSync(stdoutLog));
 
     it('should allow access to the underyling wrapped logger object', () => {
@@ -34,20 +34,18 @@ describe('logger', () => {
     describe('log level', () => {
         describe('#getLogLevel', () => {
             it('should default to the aggregate of INFO_ALL and ERRORS', () => {
-                expect(logger.getLogLevel()).toBe(15);
+                expect(logger.getLogLevel()).toBe(255);
             });
         });
 
         describe('#setLogLevel', () => {
             it('should allow the level to be set to a single value', () => {
                 logger.setLogLevel('FATAL');
-
                 expect(logger.getLogLevel()).toBe(16);
             });
 
             it('should allow the level to be set to an aggregate value', () => {
                 logger.setLogLevel('INFO|WARN|DEBUG');
-
                 expect(logger.getLogLevel()).toBe(38);
             });
         });
@@ -56,14 +54,15 @@ describe('logger', () => {
             beforeAll(() => {
                 // We want to append the logs for these tests.
                 const myConsole = makeLogger('a');
+
                 logger = logger.setLogger(myConsole);
                 logger.disableColor();
             });
 
-            beforeEach(() => (
+            beforeEach(() =>
                 // Overwrite previous contents to test this.
                 fs.writeFileSync(stdoutLog, '')
-            ));
+            );
 
             it('should log below the set log level', () => {
                 logger.setLogLevel('INFO_ALL');
@@ -87,11 +86,17 @@ describe('logger', () => {
         let myConsole;
 
         beforeAll(() => {
-            // We want to overwrite the logs for these tests.
+            // Make sure to reset the log level!
+            logger.setLogLevel(255);
             myConsole = makeLogger();
             logger = logger.setLogger(myConsole);
             logger.disableColor();
         });
+
+        beforeEach(() =>
+            // Overwrite previous contents to test this.
+            fs.writeFileSync(stdoutLog, '')
+        );
 
         it('should prepend the error message with the type', () => {
             logger.warn('foo');
