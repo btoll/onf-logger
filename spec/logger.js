@@ -59,9 +59,7 @@ describe('logger', () => {
         describe('throttling the log level', () => {
             beforeAll(() => {
                 // We want to append the logs for these tests.
-                const myConsole = makeLogger('a');
-
-                logger = logger.setLogger(myConsole);
+                logger = logger.setLogger(makeLogger('a'));
                 logger.disableColor();
             });
 
@@ -110,51 +108,69 @@ describe('logger', () => {
     describe('logging', () => {
         let myConsole;
 
-        beforeAll(() => {
+        beforeEach(() => {
             // Make sure to reset the log level!
             logger.setLogLevel(255);
+
             myConsole = makeLogger();
             logger = logger.setLogger(myConsole);
-            logger.disableColor();
+
+            // Always overwrite previous contents.
+            fs.writeFileSync(stdoutLog, '');
         });
 
-        beforeEach(() =>
-            // Overwrite previous contents to test this.
-            fs.writeFileSync(stdoutLog, '')
-        );
+        describe('colors', () => {
+            it('should allow colors to be disabled', () => {
+                logger.disableColor();
+                logger.error('foo');
 
-        it('should prepend the error message with the type', () => {
-            logger.warn('foo');
-            expect(fs.readFileSync(stdoutLog, 'utf8')).toBe('[WARN] foo');
+                expect(fs.readFileSync(stdoutLog, 'utf8')).toBe('[ERROR] foo');
+            });
+
+            it('should allow colors to be enabled', () => {
+                logger.enableColor();
+                logger.warn('baz');
+
+                expect(fs.readFileSync(stdoutLog, 'utf8')).toBe(`${logger.getColor().yellow('[WARN]')} baz`);
+            });
         });
 
-        it('should not prepend the error message with the type when `raw`', () => {
-            logger.raw('foo');
-            expect(fs.readFileSync(stdoutLog, 'utf8')).toBe('foo');
-        });
+        describe('general logging', () => {
+            beforeAll(() => logger.disableColor());
 
-        it('should pass all params through to the underlying logging implementation', () => {
-            spyOn(myConsole, 'error');
-            logger.error('foo', 5);
+            it('should prepend the error message with the type', () => {
+                logger.warn('foo');
+                expect(fs.readFileSync(stdoutLog, 'utf8')).toBe('[WARN] foo');
+            });
 
-            expect(myConsole.error).toHaveBeenCalledWith('[ERROR]', 'foo', 5);
-        });
+            it('should not prepend the error message with the type when `raw`', () => {
+                logger.raw('foo');
+                expect(fs.readFileSync(stdoutLog, 'utf8')).toBe('foo');
+            });
 
-        it('should throw when calling a non-existent but previously-defined function', () => {
-            logger.warn('foobar');
+            it('should pass all params through to the underlying logging implementation', () => {
+                spyOn(myConsole, 'error');
+                logger.error('foo', 5);
 
-            // Note we're setting a new logger but then we're not re-defining the `logger` var so
-            // it still points to the old one! This is necessary to setup the error, it cannot
-            // happen any other way!
-            //
-            // Also, note we're passing in an object of logger functions that doesn't include `warn`!
-            logger.setLogger(makeLogger('w', {
-                error: fn(),
-                info: fn(),
-                log: fn()
-            }));
+                expect(myConsole.error).toHaveBeenCalledWith('[ERROR]', 'foo', 5);
+            });
 
-            expect(() => logger.warn('foobar')).toThrow();
+            it('should throw when calling a non-existent but previously-defined function', () => {
+                logger.warn('foobar');
+
+                // Note we're setting a new logger but then we're not re-defining the `logger` var so
+                // it still points to the old one! This is necessary to setup the error, it cannot
+                // happen any other way!
+                //
+                // Also, note we're passing in an object of logger functions that doesn't include `warn`!
+                logger.setLogger(makeLogger('w', {
+                    error: fn(),
+                    info: fn(),
+                    log: fn()
+                }));
+
+                expect(() => logger.warn('foobar')).toThrow();
+            });
         });
     });
 });
