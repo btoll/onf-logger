@@ -2,10 +2,10 @@
 
 const chalk = require('chalk');
 const chalkMap = {
-    debug: 'cyan',
+    debug: 'bgBlue',
     error: 'red',
     fatal: 'bgRed',
-    info: 'blue',
+    info: 'cyan',
     log: 'green',
     success: 'green',
     warn: 'yellow'

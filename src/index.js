@@ -9,15 +9,16 @@ const logLevels = {
     RAW: 1,
     LOG: 1,
     INFO: 2,
+    SUCCESS: 2,
     WARN: 4,
     ERROR: 8,
     FATAL: 16,
     DEBUG: 32,
     //
-    INFO_ALL: 3, // (RAW && LOG) + INFO
+    INFO_ALL: 3, // (RAW && LOG) + (INFO && SUCCESS)
     ERRORS: 12, // WARN + ERROR
     ERRORS_ALL: 28, // WARN + ERROR + FATAL
-    ALL: 31 // (RAW && LOG) + INFO + WARN + ERROR + FATAL
+    ALL: 255
 };
 
 // TODO
@@ -31,8 +32,8 @@ const aliases = {
     success: 'log'
 };
 
-// Default to logging all info and all errors except FATAL.
-let logLevel = logLevels.INFO_ALL + logLevels.ERRORS;
+// Default to logging everything.
+let logLevel = 255;
 let logger = {};
 let isColorEnabled = true;
 
