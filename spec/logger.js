@@ -4,9 +4,9 @@
 const color = require('chalk');
 const fs = require('fs');
 const stdoutLog = './stdout.log';
+let logger = require('../src/index');
 
 describe('logger', () => {
-    let logger = require('../src/index');
 
     const fn = flag =>
         function () {
