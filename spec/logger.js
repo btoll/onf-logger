@@ -28,12 +28,12 @@ describe('logger', () => {
         expect(logger.__get()).toBe(console);
     });
 
-    describe('aliases', () => {
+    describe('TODO: aliases', () => {
     });
 
     describe('log level', () => {
         describe('#getLogLevel', () => {
-            it('should default to the aggregate of INFO_ALL and ERRORS', () => {
+            it('should default to ALL', () => {
                 expect(logger.getLogLevel()).toBe(255);
             });
         });
@@ -61,11 +61,15 @@ describe('logger', () => {
 
             beforeEach(() =>
                 // Overwrite previous contents to test this.
-                fs.writeFileSync(stdoutLog, '')
+                fs.writeFileSync(stdoutLog, ''),
+
+                // Reset log level.
+                logger.setLogLevel(255)
             );
 
             it('should log below the set log level', () => {
                 logger.setLogLevel('INFO_ALL');
+
                 logger.raw('derp');
                 logger.log('herp');
 
@@ -74,8 +78,23 @@ describe('logger', () => {
 
             it('should not log above the set log level', () => {
                 logger.setLogLevel('ERRORS');
+
                 logger.fatal('This should not be logged!');
                 logger.debug('Neither should this!');
+
+                expect(fs.readFileSync(stdoutLog, 'utf8')).toBe('');
+            });
+
+            it('should not log anything when off', () => {
+                logger.setLogLevel('NONE');
+
+                logger.debug('debug');
+                logger.error('error');
+                logger.fatal('fatal');
+                logger.info('info');
+                logger.log('log');
+                logger.raw('raw');
+                logger.warn('warn');
 
                 expect(fs.readFileSync(stdoutLog, 'utf8')).toBe('');
             });

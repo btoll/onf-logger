@@ -1,3 +1,4 @@
+// TODO: Throw error when unrecognized log level is given to #setLogLevel.
 'use strict';
 
 let format = require('./format/base');
@@ -6,6 +7,7 @@ let format = require('./format/base');
 const IFS = '|';
 
 const logLevels = {
+    NONE: 0,
     RAW: 1,
     LOG: 1,
     INFO: 2,
