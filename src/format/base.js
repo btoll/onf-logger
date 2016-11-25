@@ -1,15 +1,15 @@
 'use strict';
 
-const chalk = require('../chalk');
+const color = require('../color');
 
 module.exports = {
-    chalk,
+    color,
     prelog: (logMethodName, isColorEnabled) => {
         const formattedName = `[${logMethodName.toUpperCase()}]`;
 
         return !isColorEnabled ?
             formattedName :
-            chalk.color(logMethodName, formattedName);
+            color.color(logMethodName, formattedName);
     },
     postlog: () => ''
 };

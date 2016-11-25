@@ -65,7 +65,7 @@ const getDisplayDateString = () => {
 
 module.exports = Object.setPrototypeOf({
     prelog: logMethodName =>
-        `${base.chalk.color(logMethodName, getDisplayDateString())} ${base.prelog(logMethodName)}`,
+        `${base.color.color(logMethodName, getDisplayDateString())} ${base.prelog(logMethodName)}`,
 
     setDateTpl: tpl =>
         tpls.getDateString = formatDateString(tpl),

@@ -1,7 +1,7 @@
 'use strict';
 
-const chalk = require('chalk');
-const chalkMap = {
+const color = require('chalk');
+const colorMap = {
     debug: 'bgBlue',
     error: 'red',
     fatal: 'bgRed',
@@ -12,7 +12,7 @@ const chalkMap = {
 };
 
 module.exports = {
-    color: (logMethodName, str) => chalk[chalkMap[logMethodName]](str),
-    getChalk: () => chalk
+    color: (logMethodName, str) => color[colorMap[logMethodName]](str),
+    getColor: () => color
 };
 
