@@ -1,0 +1,31 @@
+##Test suite 'logger'
+ it -> 'should allow access to the underyling wrapped logger object'
+ it -> 'should allow access to the underyling color package'
+ 
+###(describe) 'TODO: aliases'
+ 
+###(describe) 'log level'
+	 
+###(describe) '#getLogLevel'
+		 it -> 'should default to ALL'
+	 
+###(describe) '#setLogLevel'
+		 it -> 'should allow the level to be set to a single value'
+		 it -> 'should allow the level to be set to an aggregate value'
+	 
+###(describe) 'throttling the log level'
+		 it -> 'should log below the set log level'
+		 it -> 'should not log above the set log level'
+		 it -> 'should not log anything when off'
+ 
+###(describe) 'logging'
+	 
+###(describe) 'colors'
+		 it -> 'should allow colors to be disabled'
+		 it -> 'should allow colors to be enabled'
+	 
+###(describe) 'general logging'
+		 it -> 'should prepend the error message with the type'
+		 it -> 'should not prepend the error message with the type when `raw`'
+		 it -> 'should pass all params through to the underlying logging implementation'
+		 it -> 'should throw when calling a non-existent but previously-defined function'
