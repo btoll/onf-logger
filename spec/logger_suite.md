@@ -1,6 +1,6 @@
 ##Test suite 'logger'
- it -> 'should allow access to the underyling wrapped logger object'
- it -> 'should allow access to the underyling color package'
+- it -> 'should allow access to the underyling wrapped logger object'
+- it -> 'should allow access to the underyling color package'
  
 ###(describe) 'TODO: aliases'
  
