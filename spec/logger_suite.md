@@ -2,7 +2,10 @@
 - it -> 'should allow access to the underyling wrapped logger object'
 - it -> 'should allow access to the underyling color package'
  
-###(describe) 'TODO: aliases'
+###(describe) 'aliases'
+	 it -> 'should not create aliases by default'
+	 it -> 'should create aliases if opting-in'
+	 it -> 'should accept an object of custom aliases'
  
 ###(describe) 'log level'
 	 

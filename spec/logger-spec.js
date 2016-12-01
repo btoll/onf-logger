@@ -7,7 +7,6 @@ const stdoutLog = './stdout.log';
 let logger = require('../src/index');
 
 describe('logger', () => {
-
     const fn = flag =>
         function () {
             fs.writeFileSync(stdoutLog, Array.from(arguments).join(' '), {
@@ -34,7 +33,24 @@ describe('logger', () => {
         expect(logger.getColor()).toBe(color);
     });
 
-    describe('TODO: aliases', () => {
+    describe('aliases', () => {
+        it('should not create aliases by default', () => {
+            logger = logger.setLogger(makeLogger());
+            expect(() => logger.debug()).toThrow();
+        });
+
+        it('should create aliases if opting-in', () => {
+            logger = logger.setLogger(makeLogger(), true);
+            expect(() => logger.debug()).not.toThrow();
+        });
+
+        it('should accept an object of custom aliases', () => {
+            logger = logger.setLogger(makeLogger(), {
+                foo: 'log'
+            });
+
+            expect(() => logger.foo()).not.toThrow();
+        });
     });
 
     describe('log level', () => {
@@ -59,7 +75,7 @@ describe('logger', () => {
         describe('throttling the log level', () => {
             beforeAll(() => {
                 // We want to append the logs for these tests.
-                logger = logger.setLogger(makeLogger('a'));
+                logger = logger.setLogger(makeLogger('a'), true);
                 logger.disableColor();
             });
 
@@ -113,7 +129,7 @@ describe('logger', () => {
             logger.setLogLevel(255);
 
             myConsole = makeLogger();
-            logger = logger.setLogger(myConsole);
+            logger = logger.setLogger(myConsole, true);
 
             // Always overwrite previous contents.
             fs.writeFileSync(stdoutLog, '');
@@ -167,7 +183,7 @@ describe('logger', () => {
                     error: fn(),
                     info: fn(),
                     log: fn()
-                }));
+                }), true);
 
                 expect(() => logger.warn('foobar')).toThrow();
             });

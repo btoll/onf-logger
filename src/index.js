@@ -27,13 +27,14 @@ const logLevels = {
 const preprocess = () => '';
 const postprocess = () => '';
 
-const aliases = {
+const defaultAliases = {
     debug: 'info',
     fatal: 'error',
     raw: 'log',
     success: 'log'
 };
 
+let aliases = null;
 // Default to logging everything.
 let logLevel = 255;
 let logger = {};
@@ -60,10 +61,10 @@ const getLogLevel = () =>
     logLevel;
 
 const normalizeMethodName = methodName =>
-    aliases[methodName] || methodName;
+    (aliases && aliases[methodName]) || methodName;
 
 /**
- * level === Number or a String.
+ * @param {Number/String} level
  *
  * For those who know what they're doing, they can simply pass the bit value as a Number.
  *
@@ -86,7 +87,15 @@ const setLogLevel = level =>
             logLevels[level] :
         level;
 
-const setLogger = target => {
+/**
+ * @param {Object} target
+ * @param {Boolean/Object} useAliases
+ *
+ * Must opt-in to use aliases.
+ *      `true` to use default aliases.
+ *      Else pass an object of aliases.
+ */
+const setLogger = (target, useAliases) => {
     // Create a new object and its delegate every time a new logger is set.
     logger = Object.setPrototypeOf({}, proto);
 
@@ -97,8 +106,15 @@ const setLogger = target => {
         logger[methodName] = wrap(methodName);
     }
 
-    for (const alias of Object.keys(aliases)) {
-        logger[alias] = wrap(alias);
+    if (useAliases) {
+        // Check if `useAliases` is an object of custom aliases.
+        aliases = (useAliases !== true) ?
+            useAliases :
+            defaultAliases;
+
+        for (const alias of Object.keys(aliases)) {
+            logger[alias] = wrap(alias);
+        }
     }
 
     return logger;
@@ -150,8 +166,8 @@ const proto = {
 
 let wrapped = {};
 
-// Defaults to the global console.
-setLogger(console);
+// Defaults to the global console (opt-in for aliases).
+setLogger(console, true);
 
 // TODO: Allow a format to be set at runtime?
 // const __setFormat = f =>
