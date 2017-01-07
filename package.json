@@ -1,5 +1,5 @@
 {
-  "name": "logger",
+  "name": "onf-logger",
   "version": "0.1.0",
   "description": "Logging wrapper",
   "main": "./src/index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/btoll/logger.git"
+    "url": "git+https://github.com/btoll/onf-logger.git"
   },
   "keywords": [
     "logger",
@@ -23,17 +23,13 @@
   ],
   "author": "Benjamin Toll",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/btoll/logger/issues"
-  },
-  "homepage": "https://github.com/btoll/logger#readme",
   "scripts": {
     "clean": "rm -rf build coverage",
     "coverage": "JASMINE_CONFIG_PATH=jasmine.json istanbul cover jasmine --captureExceptions",
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "lint": "eslint spec src",
     "specs": "JASMINE_CONFIG_PATH=jasmine.json jasmine && npm run suites",
-    "suites": "dump_describes -t spec/logger-spec.js -d spec -v --html && dump_describes -t spec/logger-spec.js -d spec -v --md",
+    "suites": "dump_describes -t spec/onf-logger-spec.js -d spec -v --html && dump_describes -t spec/onf-logger-spec.js -d spec -v --md",
     "test": "npm run clean && npm run lint && npm run specs"
   }
 }
