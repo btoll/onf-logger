@@ -3,15 +3,6 @@
   "version": "0.1.0",
   "description": "Logging wrapper",
   "main": "./src/index.js",
-  "dependencies": {
-    "chalk": "^1.1.3"
-  },
-  "devDependencies": {
-    "coveralls": "^2.11.15",
-    "dump_describes": "git+https://github.com/btoll/dump_describes.git",
-    "eslint": "^3.10.2",
-    "istanbul": "^0.4.5"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/btoll/onf-logger.git"
@@ -31,6 +22,15 @@
     "specs": "JASMINE_CONFIG_PATH=jasmine.json jasmine && npm run suites",
     "suites": "dump_describes -t spec/onf-logger-spec.js -d spec -v --html && dump_describes -t spec/onf-logger-spec.js -d spec -v --md",
     "test": "npm run clean && npm run lint && npm run specs"
+  },
+  "dependencies": {
+    "chalk": "^1.1.3"
+  },
+  "devDependencies": {
+    "coveralls": "^2.11.15",
+    "dump_describes": "git+https://github.com/btoll/dump_describes.git",
+    "eslint": "^3.10.2",
+    "istanbul": "^0.4.5"
   }
 }
 
