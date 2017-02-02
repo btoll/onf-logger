@@ -11,5 +11,5 @@
 
 ## License
 
-[MIT](LICENSE)
+[GPLv3](COPYING)
 

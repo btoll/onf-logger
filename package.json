@@ -13,7 +13,7 @@
     "console"
   ],
   "author": "Benjamin Toll",
-  "license": "MIT",
+  "license": "GPLv3",
   "scripts": {
     "clean": "rm -rf build coverage",
     "coverage": "JASMINE_CONFIG_PATH=jasmine.json istanbul cover jasmine --captureExceptions",
