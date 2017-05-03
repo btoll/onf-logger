@@ -38,6 +38,10 @@ let timeTpl = '{H}:{i}:{s}.{ms}';
 const base = require('./base');
 const tokenRe = /{([a-zA-Z]+)}/g;
 
+// Will call methods on JavaScript's Date object.
+const formatDateString = tpl =>
+    d => tpl.replace(tokenRe, (a, $1) => d[dateObjectMethods[$1]]());
+
 const tpls = {
     getDateString: formatDateString(dateTpl),
     getTimeString: formatDateString(timeTpl)
@@ -53,10 +57,6 @@ const dateObjectMethods = {
     Y: 'getFullYear'
 };
 
-// Will call methods on JavaScript's Date object.
-const formatDateString = tpl =>
-    d => tpl.replace(tokenRe, (a, $1) => d[dateObjectMethods[$1]]());
-
 // Glues the sub-templates together.
 const getDisplayDateString = () => {
     const d = new Date();
@@ -64,8 +64,13 @@ const getDisplayDateString = () => {
 };
 
 module.exports = Object.setPrototypeOf({
-    prelog: logMethodName =>
-        `${base.color.color(logMethodName, getDisplayDateString())} ${base.prelog(logMethodName)}`,
+    prelog: (logMethodName, isColorEnabled, isDateEnabled) => {
+        const dateDisplayString = !isDateEnabled ?
+            '' :
+            `${getDisplayDateString()} `;
+
+        return `${dateDisplayString}${base.prelog(logMethodName, isColorEnabled)}`;
+    },
 
     setDateTpl: tpl =>
         tpls.getDateString = formatDateString(tpl),

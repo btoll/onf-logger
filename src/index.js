@@ -1,7 +1,7 @@
 // TODO: Throw error when unrecognized log level is given to #setLogLevel.
 'use strict';
 
-let format = require('./format/base');
+let format = require('./format/date');
 
 // Internal Field Separator.
 const IFS = '|';
@@ -39,6 +39,7 @@ let aliases = null;
 let logLevel = 255;
 let logger = {};
 let isColorEnabled = true;
+let isDateEnabled = true;
 
 // Allow access to the underlying wrapped logger object.
 const __get = () =>
@@ -52,6 +53,12 @@ const disableColor = () =>
 
 const enableColor = () =>
     isColorEnabled = true;
+
+const disableDate = () =>
+    isDateEnabled = false;
+
+const enableDate = () =>
+    isDateEnabled = true;
 
 // Allow access to the underlying color package.
 const getColor = () =>
@@ -138,7 +145,7 @@ const wrap = methodName =>
             fn.apply(wrapped, arguments);
         } else {
             // Check first if it's an alias so an actual underlying implementation is called!
-            const pre = format.prelog(methodName, isColorEnabled);
+            const pre = format.prelog(methodName, isColorEnabled, isDateEnabled);
             const post = format.postlog(methodName);
 
             // By testing for truthiness, we can avoid situations where there is an empty string
@@ -158,6 +165,8 @@ const proto = {
     __get,
     disableColor,
     enableColor,
+    disableDate,
+    enableDate,
     getColor,
     getLogLevel,
     setLogLevel,
@@ -168,10 +177,6 @@ let wrapped = {};
 
 // Defaults to the global console (opt-in for aliases).
 setLogger(console, true);
-
-// TODO: Allow a format to be set at runtime?
-// const __setFormat = f =>
-//     format = logger.format = require(`./format/${f}`);
 
 module.exports = Object.setPrototypeOf(logger, proto);
 

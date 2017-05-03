@@ -1,4 +1,4 @@
-##Test suite 'logger'
+##Test suite 'onf-logger'
 - it -> 'should allow access to the underyling wrapped logger object'
 - it -> 'should allow access to the underyling color package'
 
@@ -6,6 +6,10 @@
 	 it -> 'should not create aliases by default'
 	 it -> 'should create aliases if opting-in'
 	 it -> 'should accept an object of custom aliases'
+
+###(describe) 'formatting'
+
+	(describe) 'date'
 
 ###(describe) 'log level'
 
@@ -26,6 +30,10 @@
 	(describe) 'colors'
 		 it -> 'should allow colors to be disabled'
 		 it -> 'should allow colors to be enabled'
+
+	(describe) 'date'
+		 it -> 'should allow the date to be disabled'
+		 it -> 'should allow the date to be enabled'
 
 	(describe) 'general logging'
 		 it -> 'should prepend the error message with the type'

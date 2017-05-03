@@ -1,6 +1,7 @@
 'use strict';
 
 const color = require('chalk');
+
 const colorMap = {
     debug: 'bgBlue',
     error: 'red',

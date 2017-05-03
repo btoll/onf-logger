@@ -6,7 +6,7 @@ const fs = require('fs');
 const stdoutLog = './stdout.log';
 let logger = require('../src/index');
 
-describe('logger', () => {
+describe('onf-logger', () => {
     const fn = flag =>
         function () {
             fs.writeFileSync(stdoutLog, Array.from(arguments).join(' '), {
@@ -53,6 +53,12 @@ describe('logger', () => {
         });
     });
 
+    describe('formatting', () => {
+        // TODO
+        describe('date', () => {
+        });
+    });
+
     describe('log level', () => {
         describe('#getLogLevel', () => {
             it('should default to ALL', () => {
@@ -90,10 +96,14 @@ describe('logger', () => {
             it('should log below the set log level', () => {
                 logger.setLogLevel('INFO_ALL');
 
+                logger.disableDate();
+
                 logger.raw('derp');
                 logger.log('herp');
 
                 expect(fs.readFileSync(stdoutLog, 'utf8')).toBe('derp[LOG] herp');
+
+                logger.enableDate();
             });
 
             it('should not log above the set log level', () => {
@@ -136,6 +146,9 @@ describe('logger', () => {
         });
 
         describe('colors', () => {
+            beforeEach(() => logger.disableDate());
+            afterEach(() => logger.enableDate());
+
             it('should allow colors to be disabled', () => {
                 logger.disableColor();
                 logger.error('foo');
@@ -151,8 +164,28 @@ describe('logger', () => {
             });
         });
 
+        describe('date', () => {
+            beforeEach(() => logger.disableColor());
+            afterEach(() => logger.enableDate());
+
+            it('should allow the date to be disabled', () => {
+                logger.disableDate();
+                logger.error('foo');
+
+                expect(fs.readFileSync(stdoutLog, 'utf8')).toBe('[ERROR] foo');
+            });
+
+            it('should allow the date to be enabled', () => {
+                logger.warn('baz');
+
+                // TODO: Should be a better assertion here.
+                expect(fs.readFileSync(stdoutLog, 'utf8')).not.toBe('[WARN] baz');
+            });
+        });
+
         describe('general logging', () => {
-            beforeAll(() => logger.disableColor());
+            beforeEach(() => (logger.disableColor(), logger.disableDate()));
+            afterEach(() => logger.enableDate());
 
             it('should prepend the error message with the type', () => {
                 logger.warn('foo');
