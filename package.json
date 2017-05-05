@@ -1,7 +1,7 @@
 {
   "name": "onf-logger",
-  "version": "0.3.0",
-  "description": "Logging wrapper",
+  "version": "0.3.1",
+  "description": "Customizable logging wrapper with hooks and aliases",
   "main": "./src/index.js",
   "repository": {
     "type": "git",

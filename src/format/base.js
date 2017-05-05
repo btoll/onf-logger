@@ -11,6 +11,8 @@ module.exports = {
             formattedName :
             color.color(logMethodName, formattedName);
     },
-    postlog: () => ''
+    postlog: () => '',
+    preprocess: () => '',
+    postprocess: () => ''
 };
 

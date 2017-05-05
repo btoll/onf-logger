@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // TODO: Throw error when unrecognized log level is given to #setLogLevel.
 'use strict';
 
@@ -22,10 +23,6 @@ const logLevels = {
     ERRORS_ALL: 28, // WARN + ERROR + FATAL
     ALL: 255
 };
-
-// TODO
-const preprocess = () => '';
-const postprocess = () => '';
 
 const defaultAliases = {
     debug: 'info',
@@ -139,7 +136,7 @@ const wrap = methodName =>
             throw new Error('Function does not exist on this logger!');
         }
 
-        preprocess(methodName);
+        format.preprocess(methodName);
 
         if (methodName === 'raw') {
             fn.apply(wrapped, arguments);
@@ -158,7 +155,7 @@ const wrap = methodName =>
             );
         }
 
-        postprocess(methodName);
+        format.postprocess(methodName);
     };
 
 const proto = {
@@ -176,7 +173,13 @@ const proto = {
 let wrapped = {};
 
 // Defaults to the global console (opt-in for aliases).
-setLogger(console, true);
+if (
+    console &&
+    (typeof console === 'object') &&
+    (typeof console.log === 'function')
+) {
+    setLogger(console, true);
+}
 
 module.exports = Object.setPrototypeOf(logger, proto);
 
