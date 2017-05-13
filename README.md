@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/btoll/onf-logger.svg?branch=master)](https://travis-ci.org/btoll/onf-logger)
 [![Coverage Status](https://coveralls.io/repos/github/btoll/onf-logger/badge.svg?branch=master)](https://coveralls.io/github/btoll/onf-logger?branch=master)
+[![npm](https://img.shields.io/npm/v/onf-logger.svg)](https://www.npmjs.com/package/onf-logger)
 
 `onf-logger` wraps any native or non-native logging implementation and provides hooks and aliases for complete customization.
 
