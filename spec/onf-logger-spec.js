@@ -54,6 +54,10 @@ describe('onf-logger', () => {
     });
 
     describe('formatting', () => {
+        it('should allow access to the formatter', () => {
+            expect(logger.getFormatter()).toBeDefined();
+        });
+
         // TODO
         describe('date', () => {
         });
@@ -219,6 +223,30 @@ describe('onf-logger', () => {
                 }), true);
 
                 expect(() => logger.warn('foobar')).toThrow();
+            });
+        });
+    });
+
+    describe('tpl', () => {
+        describe('dateTpl', () => {
+            it('should default to {Y}-{m}-{d}', () => {
+                expect(logger.getFormatter().getDateTpl()).toBe('{Y}-{m}-{d}');
+            });
+
+            it('should allow for it to be set', () => {
+                logger.getFormatter().setDateTpl('{m}-{d}-{Y}');
+                expect(logger.getFormatter().getDateTpl()).toBe('{m}-{d}-{Y}');
+            });
+        });
+
+        describe('timeTpl', () => {
+            it('should default to {H}:{i}:{s}.{ms}', () => {
+                expect(logger.getFormatter().getTimeTpl()).toBe('{H}:{i}:{s}.{ms}');
+            });
+
+            it('should allow for it to be set', () => {
+                logger.getFormatter().setTimeTpl('{H}:{i}');
+                expect(logger.getFormatter().getTimeTpl()).toBe('{H}:{i}');
             });
         });
     });

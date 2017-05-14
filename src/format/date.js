@@ -72,10 +72,18 @@ module.exports = Object.setPrototypeOf({
         return `${dateDisplayString}${base.prelog(logMethodName, isColorEnabled)}`;
     },
 
-    setDateTpl: tpl =>
-        tpls.getDateString = formatDateString(tpl),
+    getDateTpl: () => dateTpl,
 
-    setTimeTpl: tpl =>
+    setDateTpl: tpl => (
+        dateTpl = tpl,
+        tpls.getDateString = formatDateString(tpl)
+    ),
+
+    getTimeTpl: () => timeTpl,
+
+    setTimeTpl: tpl => (
+        timeTpl = tpl,
         tpls.getTimeString = formatDateString(tpl)
+    )
 }, base);
 

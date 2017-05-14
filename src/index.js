@@ -61,6 +61,8 @@ const enableDate = () =>
 const getColor = () =>
     format.getColor();
 
+const getFormatter = () => format;
+
 const getLogLevel = () =>
     logLevel;
 
@@ -130,6 +132,7 @@ const wrap = methodName =>
             return;
         }
 
+        // Check first if it's an alias so an actual underlying implementation is called!
         const fn = wrapped[normalizeMethodName(methodName)];
 
         if (!fn) {
@@ -141,7 +144,6 @@ const wrap = methodName =>
         if (methodName === 'raw') {
             fn.apply(wrapped, arguments);
         } else {
-            // Check first if it's an alias so an actual underlying implementation is called!
             const pre = format.prelog(methodName, isColorEnabled, isDateEnabled);
             const post = format.postlog(methodName);
 
@@ -165,6 +167,7 @@ const proto = {
     disableDate,
     enableDate,
     getColor,
+    getFormatter,
     getLogLevel,
     setLogLevel,
     setLogger
@@ -173,11 +176,9 @@ const proto = {
 let wrapped = {};
 
 // Defaults to the global console (opt-in for aliases).
-if (
-    console &&
+if (console &&
     (typeof console === 'object') &&
-    (typeof console.log === 'function')
-) {
+    (typeof console.log === 'function')) {
     setLogger(console, true);
 }
 

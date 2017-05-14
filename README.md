@@ -12,16 +12,17 @@ By wrapping each function, `onf-logger` allows for pre- and postprocessing and p
 
 ## Customizing the logging
 
-It is very easy to define or extend a custom object to handle logging and processing according to one's needs.  The object needs to have access to the following functions, either by defining them directly on the object or via delegation:
+It is very easy to define or extend a custom object, known as a formatter, to handle logging and processing according to one's needs.  The formatter needs to have access to the following functions, either by defining them directly on the object or via delegation:
 
 - postprocess
 - preprocess
 - prelog
 - postlog
+- getColor (only if needing access to the underlying color package)
 
 Have a [look at the source][1], specifically the `wrap` function, to see the order in which they are called, it is very straight-forward.
 
-It may be simpler to have the object delegate to the provided [`base` object][2] as the [`date` formatter][3] does, and simply override what is needed in the custom formatter object.
+It may be simpler to have the object delegate to the provided [`base` formatter][2] as the [`date` formatter][3] does, and simply override what is needed in the custom formatter.
 
 By default, the `date` formatter is used and is set at runtime.  To change this, simply pass the custom formatter to the `setLogger` API.
 
@@ -55,6 +56,9 @@ logger.setLogLevel('WARN|ERROR|FATAL'); // Same as logger.setLogLevel('ERRORS_AL
 
 // Reset to log everything.
 logger.setLogLevel('ALL'); // Same as logger.setLogLevel(255)
+
+// Change the date formatter's time template to only show hours and minutes (default is `{H}:{i}:{s}.{ms}`).
+logger.getFormatter().setTimeTpl('{H}:{i}');
 ```
 
 ## License
