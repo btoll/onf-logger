@@ -8,6 +8,7 @@
 	 it -> 'should accept an object of custom aliases'
 
 ###(describe) 'formatting'
+	 it -> 'should allow access to the formatter'
 
 	(describe) 'date'
 
@@ -40,3 +41,13 @@
 		 it -> 'should not prepend the error message with the type when `raw`'
 		 it -> 'should pass all params through to the underlying logging implementation'
 		 it -> 'should throw when calling a non-existent but previously-defined function'
+
+###(describe) 'tpl'
+
+	(describe) 'dateTpl'
+		 it -> 'should default to {Y}-{m}-{d}'
+		 it -> 'should allow for it to be set'
+
+	(describe) 'timeTpl'
+		 it -> 'should default to {H}:{i}:{s}.{ms}'
+		 it -> 'should allow for it to be set'
